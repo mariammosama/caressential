@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPIKE Car Controller</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        button { font-size: 20px; margin: 10px; padding: 15px; width: 100px; }
+        .controls { display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; margin: auto; }
+    </style>
+</head>
+<body>
+
+    <h2>SPIKE Essential Car Control</h2>
+    <button onclick="connect()">🔗 Connect</button>
+
+    <div class="controls">
+        <button></button>
+        <button onclick="sendCommand('F')">⬆️</button>
+        <button></button>
+
+        <button onclick="sendCommand('L')">⬅️</button>
+        <button onclick="sendCommand('S')">⏹</button>
+        <button onclick="sendCommand('R')">➡️</button>
+
+        <button></button>
+        <button onclick="sendCommand('B')">⬇️</button>
+        <button></button>
+    </div>
+
+    <script>
+        let device;
+        let characteristic;
+
+        async function connect() {
+            try {
+                device = await navigator.bluetooth.requestDevice({
+                    acceptAllDevices: true,
+                    optionalServices: ['00001523-1212-efde-1523-785feabcd123'] // Replace with SPIKE BLE UUID if needed
+                });
+
+                const server = await device.gatt.connect();
+                const service = await server.getPrimaryService('00001523-1212-efde-1523-785feabcd123'); // SPIKE BLE Service
+                characteristic = await service.getCharacteristic('00001524-1212-efde-1523-785feabcd123'); // SPIKE BLE Write Characteristic
+
+                alert("Connected to SPIKE Essential!");
+            } catch (error) {
+                alert("Connection failed: " + error);
+            }
+        }
+
+        async function sendCommand(command) {
+            if (!characteristic) {
+                alert("Not connected!");
+                return;
+            }
+            try {
+                const encoder = new TextEncoder();
+                await characteristic.writeValue(encoder.encode(command));
+            } catch (error) {
+                alert("Failed to send command: " + error);
+            }
+        }
+    </script>
+
+</body>
+</html>
