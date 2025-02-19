@@ -81,13 +81,13 @@
         <h2>Control Panel</h2>
         <div class="controls">
             <div></div>
-            <button class="control-btn" onclick="sendCommand('F')">⬆️</button>
+            <button class="control-btn" onclick="sendCommand('F')">⬆</button>
             <div></div>
-            <button class="control-btn" onclick="sendCommand('L')">⬅️</button>
+            <button class="control-btn" onclick="sendCommand('L')">⬅</button>
             <button class="control-btn" onclick="sendCommand('S')">⏹</button>
-            <button class="control-btn" onclick="sendCommand('R')">➡️</button>
+            <button class="control-btn" onclick="sendCommand('R')">➡</button>
             <div></div>
-            <button class="control-btn" onclick="sendCommand('B')">⬇️</button>
+            <button class="control-btn" onclick="sendCommand('B')">⬇</button>
             <div></div>
         </div>
     </div>
@@ -100,7 +100,7 @@
             try {
                 device = await navigator.bluetooth.requestDevice({
                     acceptAllDevices: true,
-                    optionalServices: ['6E400001-B5A3-F393-E0A9-E50E24DCCA9E']
+                    optionalServices: ['00001623-1212-efde-1623-785feabcd123']
                 });
 
                 const server = await device.gatt.connect();
