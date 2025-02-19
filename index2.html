@@ -97,23 +97,23 @@
         let characteristic;
 
         async function connect() {
-            try {
-                device = await navigator.bluetooth.requestDevice({
-                    acceptAllDevices: true,
-                    optionalServices: ['00001623-1212-efde-1623-785feabcd123']
-                });
+    try {
+        device = await navigator.bluetooth.requestDevice({
+            acceptAllDevices: true,
+            optionalServices: ['00001623-1212-efde-1623-785feabcd123'] // Updated UUID for Pybricks
+        });
 
-                const server = await device.gatt.connect();
-                const service = await server.getPrimaryService('00001523-1212-efde-1523-785feabcd123');
-                characteristic = await service.getCharacteristic('00001524-1212-efde-1523-785feabcd123');
+        const server = await device.gatt.connect();
+        const service = await server.getPrimaryService('00001623-1212-efde-1623-785feabcd123'); // Updated UUID
 
-                alert("Connected to SPIKE Essential!");
-                document.getElementById('connectPage').classList.remove('active');
-                document.getElementById('controlPage').classList.add('active');
-            } catch (error) {
-                alert("Connection failed: " + error);
-            }
-        }
+        characteristic = await service.getCharacteristic('00001624-1212-efde-1623-785feabcd123'); // Adjusted characteristic UUID
+
+        alert("Connected to SPIKE Essential!");
+    } catch (error) {
+        alert("Connection failed: " + error);
+  }
+}
+
 
         async function sendCommand(command) {
             if (!characteristic) {
