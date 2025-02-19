@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPIKE Car Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #1e1e2e;
+            color: white;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .page {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+        }
+        .active {
+            display: flex;
+        }
+        .btn {
+            font-size: 20px;
+            padding: 15px 30px;
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #e84118;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            width: 90%;
+            max-width: 300px;
+        }
+        .control-btn {
+            font-size: 24px;
+            width: 80px;
+            height: 80px;
+            background-color: #3742fa;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .control-btn:hover {
+            background-color: #273c75;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="connectPage" class="page active">
+        <h2>SPIKE Essential Car Control</h2>
+        <button class="btn" onclick="connect()">🔗 Connect</button>
+    </div>
+    
+    <div id="controlPage" class="page">
+        <h2>Control Panel</h2>
+        <div class="controls">
+            <div></div>
+            <button class="control-btn" onclick="sendCommand('F')">⬆️</button>
+            <div></div>
+            <button class="control-btn" onclick="sendCommand('L')">⬅️</button>
+            <button class="control-btn" onclick="sendCommand('S')">⏹</button>
+            <button class="control-btn" onclick="sendCommand('R')">➡️</button>
+            <div></div>
+            <button class="control-btn" onclick="sendCommand('B')">⬇️</button>
+            <div></div>
+        </div>
+    </div>
+    
+    <script>
+        let device;
+        let characteristic;
+
+        async function connect() {
+            try {
+                device = await navigator.bluetooth.requestDevice({
+                    acceptAllDevices: true,
+                    optionalServices: ['00001523-1212-efde-1523-785feabcd123']
+                });
+
+                const server = await device.gatt.connect();
+                const service = await server.getPrimaryService('00001523-1212-efde-1523-785feabcd123');
+                characteristic = await service.getCharacteristic('00001524-1212-efde-1523-785feabcd123');
+
+                alert("Connected to SPIKE Essential!");
+                document.getElementById('connectPage').classList.remove('active');
+                document.getElementById('controlPage').classList.add('active');
+            } catch (error) {
+                alert("Connection failed: " + error);
+            }
+        }
+
+        async function sendCommand(command) {
+            if (!characteristic) {
+                alert("Not connected!");
+                return;
+            }
+            try {
+                const encoder = new TextEncoder();
+                await characteristic.writeValue(encoder.encode(command));
+            } catch (error) {
+                alert("Failed to send command: " + error);
+            }
+        }
+    </script>
+</body>
+</html>
