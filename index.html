@@ -100,7 +100,7 @@
     try {
         device = await navigator.bluetooth.requestDevice({
             acceptAllDevices: true,
-            optionalServices: ['00001623-1212-efde-1623-785feabcd123'] // Pybricks BLE UUID
+            optionalServices: ['battery_service'] // Pybricks BLE UUID
         });
 
         const server = await device.gatt.connect();
