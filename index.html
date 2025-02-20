@@ -96,23 +96,61 @@
         let device;
         let characteristic;
 
-      async function connect() {
-    try {
-        device = await navigator.bluetooth.requestDevice({
-            acceptAllDevices: true,
-            optionalServices: ['battery_service'] // Pybricks BLE UUID
-        });
+        async function connect() {
+            try {
+                // Attempt connection with known Pybricks UUID
+                const serviceUUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+                device = await navigator.bluetooth.requestDevice({
+                    acceptAllDevices: true,
+                    optionalServices: [serviceUUID]
+                });
 
-        const server = await device.gatt.connect();
-        const service = await server.getPrimaryService('0x2A26');
-        characteristic = await service.getCharacteristic('C5F50002-8280-46DA-89F4-6D8051E4AEEF');
+                const server = await device.gatt.connect();
+                const service = await server.getPrimaryService(serviceUUID);
+                characteristic = await service.getCharacteristic('6e400002-b5a3-f393-e0a9-e50e24dcca9e');
 
-        alert("Connected to SPIKE Essential!");
-    } catch (error) {
-        alert("Connection failed: " + error);
-    }
-}
+                alert("Connected to SPIKE Essential!");
+                document.getElementById("connectPage").classList.remove("active");
+                document.getElementById("controlPage").classList.add("active");
+            } catch (error) {
+                console.warn("Primary UUID failed, trying dynamic detection", error);
+                await dynamicUUIDDiscovery();
+            }
+        }
 
+        // async function dynamicUUIDDiscovery() {
+        //     try {
+        //         device = await navigator.bluetooth.requestDevice({
+        //             acceptAllDevices: true,
+        //             optionalServices: ['battery_service']
+        //         });
+
+        //         const server = await device.gatt.connect();
+        //         const services = await server.getPrimaryServices();
+        //         console.log("Discovered services:", services.map(s => s.uuid));
+                
+        //         alert("Connected dynamically!");
+        //         document.getElementById("connectPage").classList.remove("active");
+        //         document.getElementById("controlPage").classList.add("active");
+        //     } catch (error) {
+        //         console.warn("Dynamic discovery failed, trying simple connection", error);
+        //         await simpleConnection();
+        //     }
+        // }
+
+        // async function simpleConnection() {
+        //     try {
+        //         device = await navigator.bluetooth.requestDevice({
+        //             acceptAllDevices: true
+        //         });
+        //         const server = await device.gatt.connect();
+        //         alert("Connected without UUID!");
+        //         document.getElementById("connectPage").classList.remove("active");
+        //         document.getElementById("controlPage").classList.add("active");
+        //     } catch (error) {
+        //         alert("Final connection attempt failed: " + error);
+        //     }
+        // }
 
         async function sendCommand(command) {
             if (!characteristic) {
