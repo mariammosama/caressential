@@ -96,27 +96,44 @@
         let device;
         let characteristic;
 
+        // async function connect() {
+        //     try {
+        //         // Attempt connection with known Pybricks UUID
+        //         const serviceUUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+        //         device = await navigator.bluetooth.requestDevice({
+        //             acceptAllDevices: true,
+        //             optionalServices: [serviceUUID]
+        //         });
+
+        //         const server = await device.gatt.connect();
+        //         const service = await server.getPrimaryService(serviceUUID);
+        //         characteristic = await service.getCharacteristic('6e400002-b5a3-f393-e0a9-e50e24dcca9e');
+
+        //         alert("Connected to SPIKE Essential!");
+        //         document.getElementById("connectPage").classList.remove("active");
+        //         document.getElementById("controlPage").classList.add("active");
+        //     } catch (error) {
+        //         console.warn("Primary UUID failed, trying dynamic detection", error);
+        //         await dynamicUUIDDiscovery();
+        //     }
+        // }  doneeee
         async function connect() {
-            try {
-                // Attempt connection with known Pybricks UUID
-                const serviceUUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
-                device = await navigator.bluetooth.requestDevice({
-                    acceptAllDevices: true,
-                    optionalServices: [serviceUUID]
-                });
+    try {
+        device = await navigator.bluetooth.requestDevice({
+            acceptAllDevices: true,
+            optionalServices: ['00001623-1212-efde-1623-785feabcd123'] // Pybricks BLE UUID
+        });
 
-                const server = await device.gatt.connect();
-                const service = await server.getPrimaryService(serviceUUID);
-                characteristic = await service.getCharacteristic('6e400002-b5a3-f393-e0a9-e50e24dcca9e');
+        const server = await device.gatt.connect();
+        const service = await server.getPrimaryService('00001623-1212-efde-1623-785feabcd123');
+        characteristic = await service.getCharacteristic('00001624-1212-efde-1623-785feabcd123');
 
-                alert("Connected to SPIKE Essential!");
-                document.getElementById("connectPage").classList.remove("active");
-                document.getElementById("controlPage").classList.add("active");
-            } catch (error) {
-                console.warn("Primary UUID failed, trying dynamic detection", error);
-                await dynamicUUIDDiscovery();
-            }
-        }
+        alert("Connected to SPIKE Essential!");
+    } catch (error) {
+        alert("Connection failed: " + error);
+    }
+}
+
 
         // async function dynamicUUIDDiscovery() {
         //     try {
