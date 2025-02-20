@@ -96,22 +96,21 @@
         let device;
         let characteristic;
 
-        async function connect() {
+      async function connect() {
     try {
         device = await navigator.bluetooth.requestDevice({
             acceptAllDevices: true,
-            optionalServices: ['00001623-1212-efde-1623-785feabcd123'] // Updated UUID for Pybricks
+            optionalServices: ['00001623-1212-efde-1623-785feabcd123'] // Pybricks BLE UUID
         });
 
         const server = await device.gatt.connect();
-        const service = await server.getPrimaryService('00001623-1212-efde-1623-785feabcd123'); // Updated UUID
-
-        characteristic = await service.getCharacteristic('00001624-1212-efde-1623-785feabcd123'); // Adjusted characteristic UUID
+        const service = await server.getPrimaryService('00001623-1212-efde-1623-785feabcd123');
+        characteristic = await service.getCharacteristic('00001624-1212-efde-1623-785feabcd123');
 
         alert("Connected to SPIKE Essential!");
     } catch (error) {
         alert("Connection failed: " + error);
-  }
+    }
 }
 
 
