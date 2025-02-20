@@ -104,8 +104,8 @@
         });
 
         const server = await device.gatt.connect();
-        const service = await server.getPrimaryService('00001623-1212-efde-1623-785feabcd123');
-        characteristic = await service.getCharacteristic('00001624-1212-efde-1623-785feabcd123');
+        const service = await server.getPrimaryService('0x2A26');
+        characteristic = await service.getCharacteristic('C5F50002-8280-46DA-89F4-6D8051E4AEEF');
 
         alert("Connected to SPIKE Essential!");
     } catch (error) {
